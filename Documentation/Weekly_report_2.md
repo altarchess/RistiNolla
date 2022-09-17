@@ -6,7 +6,7 @@
 * Started coding, communication, board class, etc.
 * A lot of just figuring out how to do all the move generation & evaluation stuff efficiently, I think it's very important to get right.
 
-As a disclaimer, I didn't get nearly as much done this week as I should have.
+Unfortunately, I didn't get nearly as much done this week as I should have.
 
 ## Next week
 Gotta setup the testing & work harder on the project in general
