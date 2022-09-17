@@ -1,0 +1,3 @@
+A collection of random positions.
+
+position 5 5 eeeeeeeeeeeeX0X0XX00eeeee
