@@ -74,6 +74,4 @@ void processCommand(std::string str) {
     }
 }
 
-void quit() {
-
-}
+void quit() {}

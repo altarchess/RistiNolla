@@ -62,13 +62,11 @@ void Board::makeMove(int square, char c) {
 };
 
 int Board::pointsInDir(int x, int y, int xd, int yd, int type) {
-    
     int points = 0;
 
     x += xd;
     y += yd;
-    while (y >= 0 && y <= y_size - 1 && x >= 0 && x <= x_size) {
-        
+    while (y >= 0 && y <= y_size - 1 && x >= 0 && x <= x_size) { 
         if (squares[y * x_size + x] == type)
             points++;
         else return points;
@@ -80,7 +78,6 @@ int Board::pointsInDir(int x, int y, int xd, int yd, int type) {
 }
 
 int Board::evalChange(int square, int type) {
-
     int y = square / x_size;
     int x = square - (y * x_size);
 
@@ -102,7 +99,6 @@ int Board::evalChange(int square, int type) {
 
 // Make move by square & type
 void Board::makeMove(int square, int type) {
-
     moves[internal_ply]      = MoveData(square, move_gen_squares[square]);
     squares[square]          = type;
     move_gen_squares[square] = 0;
@@ -137,7 +133,6 @@ void Board::makeMove(int square, int type) {
 
 // Undo move last move
 void Board::undoMove() {
-
     internal_ply--;
 
     int square = moves[internal_ply].move;
@@ -176,7 +171,6 @@ bool Board::getActivePlayer() {
 
 // Set size of the board.
 void Board::resize(int x, int y) {
-
     max_active_slots = 0;
     memset(&squares, 0, sizeof(int) * MAX_BOARD_SIZE);
     memset(&move_gen_squares, 0, sizeof(int) * MAX_BOARD_SIZE);
