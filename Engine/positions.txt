@@ -1,3 +1,10 @@
 A collection of random positions.
 
-position 5 5 1 eeeeeeeeeeeeX0X0XX00eeeee
+position 5 5 1 eeeeeeeeeeeeX0X0XX00eeeee random 5x5 board
+
+
+position 7 7 1 eeeeeeeeeeeeeeeeeeeeeeeeXeeeeeeeeeeeeeeeeeeeeeeee random 7x7 board
+
+position 5 5 1 eeeee0000eXX0X0XX0Xeeeeee should be mate at depth 1 (score = 5000)
+
+position 5 5 0 e00000000eXX0X0XX0Xeeeeee should be mate for opponent depth 2 (score = -5000)

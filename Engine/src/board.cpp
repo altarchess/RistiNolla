@@ -61,6 +61,45 @@ void Board::makeMove(int square, char c) {
     }
 };
 
+int Board::pointsInDir(int x, int y, int xd, int yd, int type) {
+    
+    int points = 0;
+
+    x += xd;
+    y += yd;
+    while (y >= 0 && y <= y_size - 1 && x >= 0 && x <= x_size) {
+        
+        if (squares[y * x_size + x] == type)
+            points++;
+        else return points;
+
+        x += xd;
+        y += yd;
+    }
+    return points;
+}
+
+int Board::evalChange(int square, int type) {
+
+    int y = square / x_size;
+    int x = square - (y * x_size);
+
+    int H_in_row;
+    int V_in_row;
+    int D_in_row1;
+    int D_in_row2;
+
+    H_in_row  = pointsInDir(x, y, 1, 0, type) + 1 + pointsInDir(x, y, -1, 0, type);
+    V_in_row  = pointsInDir(x, y, 0, 1, type) + 1 + pointsInDir(x, y, 0, -1, type);
+    D_in_row1 = pointsInDir(x, y, 1, 1, type) + 1 + pointsInDir(x, y, -1, -1, type);
+    D_in_row2 = pointsInDir(x, y, 1, -1, type) + 1 + pointsInDir(x, y, -1, 1, type);
+
+    if (std::max(H_in_row, V_in_row) > 4 || std::max(D_in_row1, D_in_row2) > 4)
+        return MAX_MATE_SCORE;
+    else 
+        return 0;
+}
+
 // Make move by square & type
 void Board::makeMove(int square, int type) {
 
@@ -89,6 +128,9 @@ void Board::makeMove(int square, int type) {
     if (N && W) addMoveGenSquare(square + d_NW, internal_ply);
 
     active_player = 1 - active_player;
+
+    // update evaluation - Note: currently only spots mate
+    eval_pattern[internal_ply + 1] = -eval_pattern[internal_ply] - evalChange(square, type);
 
     internal_ply++;
 };
@@ -187,5 +229,5 @@ void Board::printt() {
     }
 }
 int Board::evaluate() {
-    return 0;
+    return eval_pattern[internal_ply];
 };

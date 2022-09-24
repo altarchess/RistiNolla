@@ -2,7 +2,8 @@
 
 #define MAX_AXIS_SIZE 40
 #define MAX_BOARD_SIZE MAX_AXIS_SIZE * MAX_AXIS_SIZE
-#define MAX_MATE_SCORE 10000
+#define MAX_MATE_SCORE 5000
+#define MIN_MATE_SCORE 4900
 #define MAX_INTERNAL_PLY 32
 
 #ifndef TICTACTOE_BOARD_H
@@ -40,12 +41,15 @@ class Board {
     int max_active_slots                                    = {};
     MoveList search_move_lists[MAX_INTERNAL_PLY]            = {};
     MoveData moves[MAX_BOARD_SIZE];
+    int eval_pattern[MAX_INTERNAL_PLY]                      = {};
     
     int d_N, d_NE, d_E, d_SE, d_S, d_SW, d_W, d_NW;
 
     void addMoveGenMove(int square);
     void addMoveGenSquare(int square, int ply);
     void removeMoveGenSquare(int square, int ply);
+    int pointsInDir(int x, int y, int xd, int yd, int type);
+    int evalChange(int square, int type);
 
     public:
     Board() {};

@@ -8,6 +8,9 @@ int NegaMax(Board* b, SearchData* sd, int alpha, int beta, int depth, bool root)
     if (depth == 0)
         return b->evaluate();
     
+    if (b->evaluate() > MIN_MATE_SCORE || b->evaluate() < -MIN_MATE_SCORE) 
+        return b->evaluate();
+
     int best_score = alpha;
 
     b->generate();
