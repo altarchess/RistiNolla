@@ -9,4 +9,4 @@ Date       | time | target |
 2022-09-17 | 4h | Coding, reasearch & stuff |
 2022-09-23 | 3h | Finalizing initial movegen etc. |
 2022-09-24 | 6h | Negamax, initial eval terms, some bug fixing, started doing testing stuff etc. |
-2022-09-30 | 5h | Basic GUI, testing stuff, etc |
+2022-09-30 | 6h | Basic GUI, testing stuff, Documentation, etc |
