@@ -55,3 +55,5 @@ player_x = HUMAN
 player_0 = C:\Users\Example\RistiNolla\Engine\RistiNolla.exe
 ```
 player_x refers to the player playing with the X's, player_0 to the player playing with the 0's. HUMAN just means the human player should input the moves (left click with mouse on the square). If you want the AI to play either colour instead, you should specify the starting command of the AI program. 
+
+*Note: The GUI currently doesn't even know the game ends when one player gets five in a row. However it is still crucial when using the tic tac to engine, as communicating with the program manually would be a pain.
