@@ -2,3 +2,5 @@
 *.exe
 
 .vscode/
+
+GUI/gui/__pycache__/
