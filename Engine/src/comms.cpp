@@ -13,7 +13,10 @@ Board board;
 
 SearchData sd;
 
-// main communication loop
+/***
+ *  Main communication loop
+ ***/
+
 void loop() {
     std::atexit(quit);
     std::string line;
@@ -22,6 +25,10 @@ void loop() {
         processCommand(line);
     }
 }
+
+/***
+ *  Process commands from the GUI/User
+ ***/
 
 void processCommand(std::string str) {
     std::vector<std::string> args = split(str);

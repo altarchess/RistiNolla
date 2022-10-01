@@ -19,10 +19,12 @@ scr = pygame.display.set_mode((settings.grid_size * settings.size_x, settings.gr
 done = False  
 while not done:  
 
+    # Get HUMAN/Engine setting for side to move
     opponent_setting = settings.player_x
     if main_board.turn == 1:
         opponent_setting = settings.player_0
                 
+    # Unless side to move is HUMAN, we need to get the move from the engine specified in config.
     if opponent_setting != "HUMAN":
         sp = subprocess.Popen(opponent_setting, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
         print("position " + str(settings.size_x) + " " + str(settings.size_y) + " " + str(main_board.turn) + " " + main_board.pos_string() + "\n")
@@ -32,7 +34,7 @@ while not done:
         sp.stdin.write(("godepth " + str(settings.engine_depth) + "\n").encode())
         sp.stdin.flush()
                     
-        start_time = time.time()
+        # Wait till program dies or reports bestmove.
         while (True):
             if sp.poll() != None:
                 print("Failure to print bestmove!")

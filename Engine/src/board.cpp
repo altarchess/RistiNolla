@@ -3,6 +3,9 @@
 #include <iostream>
 #include <cstring>
 
+/***
+ *  Add move to movegen active square list
+ ***/
 
 void Board::addMoveGenMove(int square) {
     for (int i = 0; i < x_size * y_size; i++) {
@@ -14,6 +17,10 @@ void Board::addMoveGenMove(int square) {
     }
 }
 
+/***
+ *  Add square to movegen square table
+ ***/
+
 void Board::addMoveGenSquare(int square, int ply) {
     if (!move_gen_squares[square] && !squares[square]) {
         move_gen_squares[square] = ply;
@@ -21,10 +28,19 @@ void Board::addMoveGenSquare(int square, int ply) {
     }
 }
 
+/***
+ *  Remove square from movegen square table
+ ***/
+
 void Board::removeMoveGenSquare(int square, int ply) {
     if (move_gen_squares[square] == ply)
         move_gen_squares[square] = 0;
 }
+
+
+/***
+ *  Generate all the moves for movelist at current ply
+ ***/
 
 void Board::generate() {
     MoveList* mv = &search_move_lists[internal_ply];
@@ -40,6 +56,11 @@ void Board::generate() {
     }
 }
 
+
+/***
+ *  Get next move in movelist
+ ***/
+
 int Board::next() {
     MoveList* mv = &search_move_lists[internal_ply];
     if (mv->size) {
@@ -47,6 +68,10 @@ int Board::next() {
     }
     return -1;
 }
+
+/***
+ *  Translate char to piece type for makemove
+ ***/
 
 void Board::makeMove(int square, char c) {
     switch (c) {
@@ -60,6 +85,10 @@ void Board::makeMove(int square, char c) {
             break;
     }
 };
+
+/***
+ *  Calculates how many in a row we have in specific dir
+ ***/
 
 int Board::pointsInDir(int x, int y, int xd, int yd, int type) {
     int points = 0;
@@ -76,6 +105,10 @@ int Board::pointsInDir(int x, int y, int xd, int yd, int type) {
     }
     return points;
 }
+
+/***
+ *  Calcualtes evaluation change from previous ply
+ ***/
 
 int Board::evalChange(int square, int type) {
     int y = square / x_size;
@@ -97,7 +130,10 @@ int Board::evalChange(int square, int type) {
         return 0;
 }
 
-// Make move by square & type
+/***
+ *  MakeMove function. Keeps track of active movegen squares etc.
+ ***/
+
 void Board::makeMove(int square, int type) {
     moves[internal_ply]      = MoveData(square, move_gen_squares[square]);
     squares[square]          = type;
@@ -131,7 +167,10 @@ void Board::makeMove(int square, int type) {
     internal_ply++;
 };
 
-// Undo move last move
+/***
+ *  Reverse makemove
+ ***/
+
 void Board::undoMove() {
     internal_ply--;
 
@@ -161,15 +200,26 @@ void Board::undoMove() {
     active_player = 1 - active_player;
 };
 
+/***
+ *  Change active player
+ ***/
+
 void Board::setActivePlayer(bool turn) {
     active_player = turn;
 }
+
+/***
+ *  get active player
+ ***/
 
 bool Board::getActivePlayer() {
     return active_player;
 }
 
-// Set size of the board.
+/***
+ *  Set board size
+ ***/
+
 void Board::resize(int x, int y) {
     max_active_slots = 0;
     memset(&squares, 0, sizeof(int) * MAX_BOARD_SIZE);
@@ -191,7 +241,10 @@ void Board::resize(int x, int y) {
     d_NW = x_size -1;
 }
 
-// Print's board state to console
+/***
+ *  Print current board state
+ ***/
+
 void Board::print() {
     for (int i = 0; i < y_size; i++) {
         for (int j = 0; j < x_size; j++) {
@@ -209,6 +262,10 @@ void Board::print() {
         std::cout << std::endl;
     }
 }
+
+/***
+ *  print current movegen active squares.
+ ***/
 
 void Board::printt() {
     for (int i = 0; i < y_size; i++) {
