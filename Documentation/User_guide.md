@@ -13,7 +13,7 @@ make
 
 It's rather difficult to use the program from the command line, the use of a GUI is necessary, which brings us to...
 
-## GUI
+## The Simple GUI
 
 ### Installing & Running
 
