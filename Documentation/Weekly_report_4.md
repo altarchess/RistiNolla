@@ -11,4 +11,4 @@
 * Looking at doctest for unit testing with cpp, but as I have no previous experience it's a bit confusing, I'm sure I'll manage tho.
 
 ## Next week?
-Testing, Documentation & hopefully start improving on negamax.
+Testing, Documentation & hopefully start improving on negamax. I have some extra time tomrrow, so I'm hoping to get to some tt as well for search.
