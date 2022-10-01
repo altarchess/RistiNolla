@@ -55,9 +55,9 @@ class Board:
         for i in range(self.config.size_x):
             for j in range(self.config.size_y):
                 if self.pieces[j + i * self.config.size_x] == PieceType.square_empty:
-                    s += "e";
+                    s += "e"
                 elif self.pieces[j + i * self.config.size_x] == PieceType.square_X:
-                    s += "X";
+                    s += "X"
                 elif self.pieces[j + i * self.config.size_x] == PieceType.square_0:
-                    s += "0";
+                    s += "0"
         return s

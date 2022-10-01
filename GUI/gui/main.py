@@ -25,8 +25,8 @@ while not done:
                 
     if opponent_setting != "HUMAN":
         sp = subprocess.Popen(opponent_setting, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-        print("position " + str(settings.size_x) +  " " + str(settings.size_y) + " "  + str(main_board.turn) + " " + main_board.pos_string() + "\n")
-        sp.stdin.write(("position " + str(settings.size_x) +  " " + str(settings.size_y) + " "  + str(main_board.turn) + " " + main_board.pos_string() + "\n").encode())
+        print("position " + str(settings.size_x) + " " + str(settings.size_y) + " " + str(main_board.turn) + " " + main_board.pos_string() + "\n")
+        sp.stdin.write(("position " + str(settings.size_x) + " " + str(settings.size_y) + " " + str(main_board.turn) + " " + main_board.pos_string() + "\n").encode())
         sp.stdin.flush()
         print("godepth " + str(settings.engine_depth) + "\n")
         sp.stdin.write(("godepth " + str(settings.engine_depth) + "\n").encode())
@@ -42,8 +42,8 @@ while not done:
             cmd = line.split(" ")
             if cmd[0] == "bestmove":
                 main_board.make_move(int(cmd[1]), board.PieceType(main_board.turn + 1))
-                sp.kill();
-                break;
+                sp.kill()
+                break
 
     for event in pygame.event.get():  
         if event.type == pygame.QUIT:  
