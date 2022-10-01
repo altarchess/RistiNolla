@@ -6,5 +6,9 @@
 * Wrote a simple User Guide for the potential peer review.
 * Commented all the previously uncommented code.
 
+## Issues & Questions
+* Should I do unit testing for the GUI too (even though it's not really a part of the main program)? I've unit testing in python during a previous course, so it shouldn't take too much time.
+* Looking at doctest for unit testing with cpp, but as I have no previous experience it's a bit confusing, I'm sure I'll manage tho.
+
 ## Next week?
 Testing, Documentation & hopefully start improving on negamax.
