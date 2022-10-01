@@ -64,7 +64,7 @@ void processCommand(std::string str) {
 
     } else if (args.at(0) == "print") {
         board.print();
-        //board.printt();
+        board.printt();
     }
     else if (args.at(0) == "godepth") {
         if (args.size() < 2) {

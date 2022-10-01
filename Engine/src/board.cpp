@@ -9,7 +9,7 @@
 
 void Board::addMoveGenMove(int square) {
     for (int i = 0; i < x_size * y_size; i++) {
-        if (move_gen_list[i] == -1) {
+        if (move_gen_list[i] == -1 || move_gen_list[i] == square) {
             move_gen_list[i] = square;
             max_active_slots = std::max(max_active_slots, i);
             return;
