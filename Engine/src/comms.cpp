@@ -56,11 +56,14 @@ void processCommand(std::string str) {
 
         std::string pos = args.at(4);
         board.resize(x_size, y_size);
-        for (int i = 0; i < pos.size(); i++) {
+        for (unsigned long long i = 0; i < pos.size(); i++) {
             board.makeMove(i, pos[i]);
         }
 
         board.setActivePlayer(turn);
+
+        // increment tt age for replacement scheme
+        sd.tt.incrementAge();
 
     } else if (args.at(0) == "print") {
         board.print();

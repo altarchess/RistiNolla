@@ -2,43 +2,60 @@
 #include "board.h"
 
 #include <iostream>
+#include <cstdint>
 
 /***
  *  Basic NegaMax Search 
  *  See https://www.chessprogramming.org/Negamax
  ***/
 
-int NegaMax(Board* b, SearchData* sd, int alpha, int beta, int depth, bool root) {
+int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bool root) {
     sd->nodes++;
     // When we hit depth 0, evaluate the leaves.
     if (depth == 0)
         return b->evaluate();
-    
+
     // if We hit a matescore in the current node, we can exit early.
     if (b->evaluate() > MIN_MATE_SCORE || b->evaluate() < -MIN_MATE_SCORE) 
         return b->evaluate();
 
-    int best_score = alpha;
+    Entry en = sd->tt.get(b->hash);
+    if (en.key == b->hash) {
+        if (en.depth >= depth) {
+            if (en.score >= beta ? en.type != ALL_NODE 
+              : en.type != CUT_NODE && en.score <= alpha)
+                return en.score;
+        }
+    }
+
+    int16_t best_score   = -MAX_MATE_SCORE;
+    bool raise_alpha = false;
 
     b->generate();
-    int m = b->next();
+    int16_t m = b->next();
 
     while (m != -1) {
         b->makeMove(m, 1 + b->getActivePlayer());
-        int score = -NegaMax(b, sd, -beta, -alpha, depth - 1, false);
+        int score = -negaMax(b, sd, -beta, -alpha, depth - 1, false);
         b->undoMove();
         if (score > best_score) {
             best_score = score;
             if (root)
                 sd->best_move = m;
-            if (score > alpha)
+            if (score > alpha) {
                 alpha = score;
+                raise_alpha = true;
+            }
             // Alpha-Beta cutoff.
-            if (score > beta)
+            if (score >= beta) {
+                sd->tt.put(b->hash, CUT_NODE, depth, score, m);
                 return score;
+            }
         }
         m = b->next();
     }
+    // If alpha was raised, store as PV_NODE, otherwise as ALL_NODE
+    sd->tt.put(b->hash, 1 - raise_alpha, depth, best_score, 0);
     return best_score;
 }
 
@@ -47,10 +64,10 @@ int NegaMax(Board* b, SearchData* sd, int alpha, int beta, int depth, bool root)
  *  See https://www.chessprogramming.org/Iterative_Deepening
  ***/
 
-int searchRoot(Board* b, SearchData*  sd) {
+int16_t searchRoot(Board* b, SearchData*  sd) {
     sd->nodes = 0;
-    for (int depth = 1; depth <= sd->max_depth; depth++) {
-        int score = NegaMax(b, sd, -MAX_MATE_SCORE, MAX_MATE_SCORE, depth, true);
+    for (int16_t depth = 1; depth <= sd->max_depth; depth++) {
+        int16_t score = negaMax(b, sd, -MAX_MATE_SCORE, MAX_MATE_SCORE, depth, true);
         std::cout << "depth " << depth << " score " << score << " nodes " << sd->nodes << std::endl;
     }
     return sd->best_move;

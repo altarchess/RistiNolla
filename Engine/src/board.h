@@ -1,4 +1,5 @@
 #include <vector>
+#include <cstdint>
 
 #define MAX_AXIS_SIZE 40
 #define MAX_BOARD_SIZE MAX_AXIS_SIZE * MAX_AXIS_SIZE
@@ -52,6 +53,8 @@ class Board {
     int evalChange(int square, int type);
 
     public:
+    uint64_t hash;
+
     Board() {};
     
     void generate();
@@ -70,5 +73,7 @@ class Board {
     void print();
     void printt();
 };
+
+void initKeys();
 
 #endif

@@ -3,6 +3,33 @@
 #include <iostream>
 #include <cstring>
 
+// Random numbers for each piecetype on each square
+uint64_t rand_hash[2 * MAX_BOARD_SIZE];
+
+uint64_t seed;
+
+/***
+ * Random number gen
+ ***/
+
+uint64_t rand64() {
+    seed ^= seed << 13;
+    seed ^= seed >> 7;
+    seed ^= seed << 17;
+    return seed;
+}
+
+/***
+ * Generate ranom numbers for both piecetypes for all squares
+ ***/
+
+void initKeys() {
+    seed = 3812734618273475183;
+    for (int i = 0; i < 2 * MAX_BOARD_SIZE; i++) {
+        rand_hash[i] = rand64();
+    }
+}
+
 /***
  *  Add move to movegen active square list
  ***/
@@ -138,17 +165,19 @@ void Board::makeMove(int square, int type) {
     moves[internal_ply]      = MoveData(square, move_gen_squares[square]);
     squares[square]          = type;
     move_gen_squares[square] = 0;
-    // activate nearby squares for movegen.
+    
+    // Update hash key
+    hash ^= rand_hash[(type - 1) * MAX_BOARD_SIZE + square];
 
+    // Activate nearby squares for movegen.
     int y = square / x_size;
     int x = square - (y * x_size);
     
+    // Add moves to movegen
     bool W = x > 0;
     bool E = x < x_size - 1;
     bool S = y > 0;
     bool N = y < y_size - 1;
-
-    // note add moves to movegen list
 
     if (N) addMoveGenSquare(square + d_N, internal_ply);
     if (N && E) addMoveGenSquare(square + d_NE, internal_ply);
@@ -174,10 +203,15 @@ void Board::makeMove(int square, int type) {
 void Board::undoMove() {
     internal_ply--;
 
-    int square = moves[internal_ply].move;
-    squares[square] = 0;
+    int square               = moves[internal_ply].move;
+    int type                 = squares[square];
+    squares[square]          = 0;
     move_gen_squares[square] = moves[internal_ply].gen_ply;
 
+    // Update hash key
+    hash ^= rand_hash[(type - 1) * MAX_BOARD_SIZE + square];
+
+    // Remove moves from movegen
     int y = square / x_size;
     int x = square - (y * x_size);
     
@@ -185,8 +219,6 @@ void Board::undoMove() {
     bool E = x < x_size - 1;
     bool S = y > 0;
     bool N = y < y_size - 1;
-
-    // note add moves to movegen list
 
     if (N) removeMoveGenSquare(square + d_N, internal_ply);
     if (N && E) removeMoveGenSquare(square + d_NE, internal_ply);
@@ -261,6 +293,8 @@ void Board::print() {
         }
         std::cout << std::endl;
     }
+
+    std::cout << "HASH KEY: " << hash << std::endl;
 }
 
 /***
