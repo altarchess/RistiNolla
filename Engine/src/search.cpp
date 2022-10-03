@@ -29,13 +29,13 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
     }
 
     int16_t best_score   = -MAX_MATE_SCORE;
-    bool raise_alpha = false;
+    bool raise_alpha     = false;
 
     b->generate();
     int16_t m = b->next();
 
     while (m != -1) {
-        b->makeMove(m, 1 + b->getActivePlayer());
+        b->makeMove(m, 1 + b->getActivePlayer(), &sd->tt);
         int score = -negaMax(b, sd, -beta, -alpha, depth - 1, false);
         b->undoMove();
         if (score > best_score) {

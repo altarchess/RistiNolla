@@ -161,13 +161,15 @@ int Board::evalChange(int square, int type) {
  *  MakeMove function. Keeps track of active movegen squares etc.
  ***/
 
-void Board::makeMove(int square, int type) {
+void Board::makeMove(int square, int type, TT* tt_pointer) {
     moves[internal_ply]      = MoveData(square, move_gen_squares[square]);
     squares[square]          = type;
     move_gen_squares[square] = 0;
     
     // Update hash key
     hash ^= rand_hash[(type - 1) * MAX_BOARD_SIZE + square];
+    if (tt_pointer != nullptr) 
+        tt_pointer->prefetch(hash);
 
     // Activate nearby squares for movegen.
     int y = square / x_size;

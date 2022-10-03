@@ -1,3 +1,5 @@
+#include "tt.h"
+
 #include <vector>
 #include <cstdint>
 
@@ -59,7 +61,7 @@ class Board {
     
     void generate();
     int  next();
-    void makeMove(int square, int type);
+    void makeMove(int square, int type, TT* tt_pointer = nullptr);
     void makeMove(int square, char c);
     void undoMove();
 

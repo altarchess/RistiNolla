@@ -1,6 +1,9 @@
 #include <cstdint>
 #include <memory>
 
+#ifndef TICTACTOE_TT_H
+#define TICTACTOE_TT_H
+
 #define PV_NODE  0
 #define ALL_NODE 1
 #define CUT_NODE 2
@@ -43,3 +46,5 @@ class TT {
 
     void prefetch(uint64_t key);
 };
+
+#endif
