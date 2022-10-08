@@ -11,3 +11,4 @@ A tic tac toe engine in C++.
 * [Weekly report #2](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Weekly_report_2.md)
 * [Weekly report #3](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Weekly_report_3.md)
 * [Weekly report #4](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Weekly_report_4.md)
+* [Weekly report #5](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Weekly_report_5.md)
