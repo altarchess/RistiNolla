@@ -5,7 +5,7 @@ class Config:
     #Read config file
     def __init__(self):
         config = configparser.ConfigParser()
-        config.read(os.path.dirname(__file__) + '\config.cfg')
+        config.read(os.path.dirname(__file__) + '/config.cfg')
 
         self.size_x = int(config.get('Board', 'size_x'))
         self.size_y = int(config.get('Board', 'size_y'))
