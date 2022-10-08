@@ -10,4 +10,4 @@
 ** Was a really busy week.
 
 ## Next week?
-Testing, Documentation & hopefully start improving on negamax. I have some extra time tomrrow, so I'm hoping to get to some search stuff done as well.
+Testing, Documentation
