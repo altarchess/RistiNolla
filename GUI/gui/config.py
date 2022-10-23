@@ -11,7 +11,7 @@ class Config:
         self.size_y = int(config.get('Board', 'size_y'))
         self.grid_size = int(config.get('Board', 'grid_size'))
 
-        self.engine_depth = int(config.get('AISettings', 'max_depth'))
+        self.engine_time = int(config.get('AISettings', 'max_time'))
 
         self.player_x = config.get('Players', 'player_x')
         self.player_0 = config.get('Players', 'player_0')

@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
 Board board;
 
@@ -77,7 +78,20 @@ void processCommand(std::string str) {
         sd.max_depth  = std::clamp(stoi(args.at(1)), 1, MAX_INTERNAL_PLY - 1);
         sd.force_quit = false;
         sd.time_limit = 0xFFFFFFFF;
-        sd.start_time = 0;
+
+        int best_move = searchRoot(&board, &sd);
+        std::cout << "bestmove " << best_move << std::endl; 
+    }
+    else if (args.at(0) == "gotime") {
+        if (args.size() < 2) {
+            INVALID_ARGUMENT
+            return;
+        }
+        sd.max_depth  = 100;
+        sd.force_quit = false;
+        auto time  = std::chrono::duration_cast<std::chrono::milliseconds>(
+                     std::chrono::steady_clock::now().time_since_epoch()).count(); 
+        sd.time_limit = time + std::max(stoi(args.at(1)), 1);
 
         int best_move = searchRoot(&board, &sd);
         std::cout << "bestmove " << best_move << std::endl; 

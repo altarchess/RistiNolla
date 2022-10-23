@@ -30,8 +30,8 @@ while not done:
         print("position " + str(settings.size_x) + " " + str(settings.size_y) + " " + str(main_board.turn) + " " + main_board.pos_string() + "\n")
         sp.stdin.write(("position " + str(settings.size_x) + " " + str(settings.size_y) + " " + str(main_board.turn) + " " + main_board.pos_string() + "\n").encode())
         sp.stdin.flush()
-        print("godepth " + str(settings.engine_depth) + "\n")
-        sp.stdin.write(("godepth " + str(settings.engine_depth) + "\n").encode())
+        print("gotime " + str(settings.engine_time) + "\n")
+        sp.stdin.write(("gotime " + str(settings.engine_time) + "\n").encode())
         sp.stdin.flush()
                     
         # Wait till program dies or reports bestmove.
