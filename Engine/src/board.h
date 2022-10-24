@@ -7,7 +7,7 @@
 #define MAX_BOARD_SIZE MAX_AXIS_SIZE * MAX_AXIS_SIZE
 #define MAX_MATE_SCORE 5000
 #define MIN_MATE_SCORE 4900
-#define MAX_INTERNAL_PLY 32
+#define MAX_INTERNAL_PLY MAX_BOARD_SIZE
 
 #ifndef TICTACTOE_BOARD_H
 #define TICTACTOE_BOARD_H
@@ -15,6 +15,17 @@
 struct MoveList {
     int moves[MAX_BOARD_SIZE] = {};
     int size;
+};
+
+struct inARowData {
+    int openended  = 0;
+    int points     = 0;
+    inARowData operator+(const inARowData& rd) {
+        inARowData new_data;
+        new_data.openended = openended + rd.openended;
+        new_data.points    = points + rd.points;
+        return new_data;
+    }
 };
 
 struct MoveData {
@@ -44,15 +55,15 @@ class Board {
     int max_active_slots                                    = {};
     MoveList search_move_lists[MAX_INTERNAL_PLY]            = {};
     MoveData moves[MAX_BOARD_SIZE];
-    int eval_pattern[MAX_INTERNAL_PLY]                      = {};
+    int eval_pattern[MAX_INTERNAL_PLY][2][3][MAX_AXIS_SIZE] = {}; // ply, side to move, openendedness, in a row count. Using MAX_AXIS_SIZE just to be ultra safe, technicly 5 should be fine.
     
     int d_N, d_NE, d_E, d_SE, d_S, d_SW, d_W, d_NW;
 
     void addMoveGenMove(int square);
     void addMoveGenSquare(int square, int ply);
     void removeMoveGenSquare(int square, int ply);
-    int pointsInDir(int x, int y, int xd, int yd, int type);
-    int evalChange(int square, int type);
+    inARowData pointsInDir(int x, int y, int xd, int yd, int type);
+    void evalChange(int square, int type);
 
     public:
     uint64_t hash;

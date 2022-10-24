@@ -29,7 +29,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
     } 
 
     // if We hit a matescore in the current node, we can exit early.
-    if (b->evaluate() > MIN_MATE_SCORE || b->evaluate() < -MIN_MATE_SCORE) 
+    if (b->evaluate() > MIN_MATE_SCORE || b->evaluate() < -MIN_MATE_SCORE)
         return b->evaluate();
 
     Entry en = sd->tt.get(b->hash);
