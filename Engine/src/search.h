@@ -14,6 +14,8 @@ struct SearchData {
     int16_t best_move;
 
     bool timeLeft();
+
+    int16_t killer_moves[MAX_INTERNAL_PLY] = {};
 };
 
 int16_t searchRoot(Board* board, SearchData* sd);

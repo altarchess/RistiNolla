@@ -69,11 +69,11 @@ void Board::removeMoveGenSquare(int square, int ply) {
  *  Generate all the moves for movelist at current ply
  ***/
 
-void Board::generate(int16_t hash_move) {
+void Board::generate(int16_t hash_move, int16_t killer_move) {
     MoveList* mv = &search_move_lists[internal_ply];
     mv->size     = 0;
     for (int i = 0; i <= max_active_slots; i++) {
-        if (move_gen_list[i] != -1 && move_gen_list[i] != hash_move) {
+        if (move_gen_list[i] != -1 && move_gen_list[i] != hash_move && move_gen_list[i] != killer_move) {
             if (move_gen_squares[move_gen_list[i]] >= internal_ply) {
                 move_gen_list[i] = -1;
             } else if (move_gen_squares[move_gen_list[i]] != 0) {
@@ -81,7 +81,10 @@ void Board::generate(int16_t hash_move) {
             }
         }
     }
-    if (hash_move != -1 && squares[hash_move] == 0) {
+    if (killer_move != -1 && squares[killer_move] == 0) {
+        mv->moves[mv->size++] = killer_move;
+    }
+    if (hash_move != -1 && hash_move != killer_move && squares[hash_move] == 0) {
         mv->moves[mv->size++] = hash_move;
     }
 }

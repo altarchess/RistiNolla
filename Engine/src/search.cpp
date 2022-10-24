@@ -16,7 +16,7 @@ bool SearchData::timeLeft() {
  *  See https://www.chessprogramming.org/Negamax
  ***/
 
-int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bool root) {
+int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, int ply) {
     sd->nodes++;
     // When we hit depth 0, evaluate the leaves.
     if (depth == 0)
@@ -32,6 +32,8 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
     if (b->evaluate() > MIN_MATE_SCORE || b->evaluate() < -MIN_MATE_SCORE)
         return b->evaluate();
 
+    bool root = ply == 0;
+
     int16_t hash_move = -1;
     Entry en = sd->tt.get(b->hash);
     if (en.key == b->hash) {
@@ -46,12 +48,12 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
     int16_t best_score   = -MAX_MATE_SCORE;
     bool raise_alpha     = false;
 
-    b->generate(hash_move);
+    b->generate(hash_move, sd->killer_moves[ply]);
     int16_t m = b->next();
 
     while (m != -1 && !sd->force_quit) {
         b->makeMove(m, 1 + b->getActivePlayer(), &sd->tt);
-        int score = -negaMax(b, sd, -beta, -alpha, depth - 1, false);
+        int score = -negaMax(b, sd, -beta, -alpha, depth - 1, ply + 1);
         b->undoMove();
         if (score > best_score) {
             best_score = score;
@@ -63,6 +65,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
             }
             // Alpha-Beta cutoff.
             if (score >= beta && !sd->force_quit) {
+                sd->killer_moves[ply] = m;
                 sd->tt.put(b->hash, CUT_NODE, depth, score, m);
                 return score;
             }
@@ -83,7 +86,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
 int16_t searchRoot(Board* b, SearchData*  sd) {
     sd->nodes = 0;
     for (int16_t depth = 1; depth <= sd->max_depth; depth++) {
-        int16_t score = negaMax(b, sd, -MAX_MATE_SCORE, MAX_MATE_SCORE, depth, true);
+        int16_t score = negaMax(b, sd, -MAX_MATE_SCORE, MAX_MATE_SCORE, depth, 0);
         if (sd->force_quit)
             break;
         std::cout << "depth " << depth << " score " << score << " nodes " << sd->nodes << std::endl;

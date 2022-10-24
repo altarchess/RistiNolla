@@ -70,7 +70,7 @@ class Board {
 
     Board() {};
     
-    void generate(int16_t hash_move = -1);
+    void generate(int16_t hash_move = -1, int16_t killer = -1);
     int  next();
     void makeMove(int square, int type, TT* tt_pointer = nullptr);
     void makeMove(int square, char c);
