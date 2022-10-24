@@ -7,7 +7,7 @@
 #define MAX_BOARD_SIZE MAX_AXIS_SIZE * MAX_AXIS_SIZE
 #define MAX_MATE_SCORE 5000
 #define MIN_MATE_SCORE 4900
-#define MAX_INTERNAL_PLY 32
+#define MAX_INTERNAL_PLY MAX_BOARD_SIZE
 
 #ifndef TICTACTOE_BOARD_H
 #define TICTACTOE_BOARD_H
@@ -22,8 +22,8 @@ struct inARowData {
     int points     = 0;
     inARowData operator+(const inARowData& rd) {
         inARowData new_data;
-        new_data.openended = this->openended + rd.openended;
-        new_data.points    = this->points + rd.points;
+        new_data.openended = openended + rd.openended;
+        new_data.points    = points + rd.points;
         return new_data;
     }
 };

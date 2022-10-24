@@ -122,9 +122,9 @@ inARowData Board::pointsInDir(int x, int y, int xd, int yd, int type) {
     y += yd;
     inARowData ret;
     while (y >= 0 && y <= y_size - 1 && x >= 0 && x <= x_size - 1) { 
-        if (squares[y * x_size + x] == type)
+        if (squares[y * x_size + x] == type) {
             ret.points++;
-        else if (squares[y * x_size + x] == 0) {
+        } else if (squares[y * x_size + x] == 0) {
             ret.openended = 1;
             return ret;
         } else {
@@ -161,38 +161,48 @@ void Board::evalChange(int square, int type) {
     D_in_row1 = pointsInDir(x, y, 1, 1, type)  + pointsInDir(x, y, -1, -1, type) + bonus_point;
     D_in_row2 = pointsInDir(x, y, 1, -1, type) + pointsInDir(x, y, -1, 1, type)  + bonus_point;
 
-    eval_pattern[internal_ply + 1][type - 1][H_in_row.openended][H_in_row.points]   = eval_pattern[internal_ply][type - 1][H_in_row.openended][H_in_row.points]   + 1;
-    eval_pattern[internal_ply + 1][type - 1][V_in_row.openended][V_in_row.points]   = eval_pattern[internal_ply][type - 1][V_in_row.openended][V_in_row.points]   + 1;
-    eval_pattern[internal_ply + 1][type - 1][D_in_row1.openended][D_in_row1.points] = eval_pattern[internal_ply][type - 1][D_in_row1.openended][D_in_row1.points] + 1;
-    eval_pattern[internal_ply + 1][type - 1][D_in_row2.openended][D_in_row2.points] = eval_pattern[internal_ply][type - 1][D_in_row2.openended][D_in_row2.points] + 1;
-    
-    /***
+    // Reset eval params to previous ply
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 4; j++) {
+            eval_pattern[internal_ply + 1][type - 1][i][2 + j]       = eval_pattern[internal_ply][type - 1][i][2 + j];
+            eval_pattern[internal_ply + 1][1 - (type - 1)][i][2 + j] = eval_pattern[internal_ply][1 - (type - 1)][i][2 + j];
+        }
+    }
+
+    eval_pattern[internal_ply + 1][type - 1][H_in_row.openended][H_in_row.points]       = eval_pattern[internal_ply][type - 1][H_in_row.openended][H_in_row.points]       + 1;
+    eval_pattern[internal_ply + 1][type - 1][V_in_row.openended][V_in_row.points]       = eval_pattern[internal_ply][type - 1][V_in_row.openended][V_in_row.points]       + 1;
+    eval_pattern[internal_ply + 1][type - 1][D_in_row1.openended][D_in_row1.points]     = eval_pattern[internal_ply][type - 1][D_in_row1.openended][D_in_row1.points]     + 1;
+    eval_pattern[internal_ply + 1][type - 1][D_in_row2.openended][D_in_row2.points]     = eval_pattern[internal_ply][type - 1][D_in_row2.openended][D_in_row2.points]     + 1;
+    eval_pattern[internal_ply + 1][type - 1][H_in_row.openended][H_in_row.points - 1]   = eval_pattern[internal_ply][type - 1][H_in_row.openended][H_in_row.points - 1]   - 1;
+    eval_pattern[internal_ply + 1][type - 1][V_in_row.openended][V_in_row.points - 1]   = eval_pattern[internal_ply][type - 1][V_in_row.openended][V_in_row.points - 1]   - 1;
+    eval_pattern[internal_ply + 1][type - 1][D_in_row1.openended][D_in_row1.points - 1] = eval_pattern[internal_ply][type - 1][D_in_row1.openended][D_in_row1.points - 1] - 1;
+    eval_pattern[internal_ply + 1][type - 1][D_in_row2.openended][D_in_row2.points - 1] = eval_pattern[internal_ply][type - 1][D_in_row2.openended][D_in_row2.points - 1] - 1;
+
     // Reduce openendedness of not side to move eval patterns
     H_in_row  = pointsInDir(x, y, 1, 0, 3 - type);
-    eval_pattern[internal_ply + 1][(3 - type) - 1][H_in_row.openended + 1][H_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][H_in_row.openended + 1][H_in_row.points] - 1;
-    eval_pattern[internal_ply + 1][(3 - type) - 1][H_in_row.openended][H_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][H_in_row.openended][H_in_row.points] + 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][H_in_row.openended + 1][H_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][H_in_row.openended + 1][H_in_row.points] - 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][H_in_row.openended][H_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][H_in_row.openended][H_in_row.points] + 1;
     H_in_row  = pointsInDir(x, y, -1, 0, 3 - type);
-    eval_pattern[internal_ply + 1][(3 - type) - 1][H_in_row.openended + 1][H_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][H_in_row.openended + 1][H_in_row.points] - 1;
-    eval_pattern[internal_ply + 1][(3 - type) - 1][H_in_row.openended][H_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][H_in_row.openended][H_in_row.points] + 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][H_in_row.openended + 1][H_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][H_in_row.openended + 1][H_in_row.points] - 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][H_in_row.openended][H_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][H_in_row.openended][H_in_row.points] + 1;
     V_in_row  = pointsInDir(x, y, 0, 1, 3 - type); 
-    eval_pattern[internal_ply + 1][(3 - type) - 1][V_in_row.openended + 1][V_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][V_in_row.openended + 1][V_in_row.points] - 1;
-    eval_pattern[internal_ply + 1][(3 - type) - 1][V_in_row.openended][V_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][V_in_row.openended][V_in_row.points] + 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][V_in_row.openended + 1][V_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][V_in_row.openended + 1][V_in_row.points] - 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][V_in_row.openended][V_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][V_in_row.openended][V_in_row.points] + 1;
     V_in_row  = pointsInDir(x, y, 0, -1, 3 - type);
-    eval_pattern[internal_ply + 1][(3 - type) - 1][V_in_row.openended + 1][V_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][V_in_row.openended + 1][V_in_row.points] - 1;
-    eval_pattern[internal_ply + 1][(3 - type) - 1][V_in_row.openended][V_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][V_in_row.openended][V_in_row.points] + 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][V_in_row.openended + 1][V_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][V_in_row.openended + 1][V_in_row.points] - 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][V_in_row.openended][V_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][V_in_row.openended][V_in_row.points] + 1;
     D_in_row1 = pointsInDir(x, y, 1, 1, 3 - type);  
-    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row1.openended + 1][D_in_row1.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row1.openended + 1][D_in_row1.points] - 1;
-    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row1.openended][D_in_row1.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row1.openended][D_in_row1.points] + 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][D_in_row1.openended + 1][D_in_row1.points] = eval_pattern[internal_ply][1 - (type - 1)][D_in_row1.openended + 1][D_in_row1.points] - 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][D_in_row1.openended][D_in_row1.points] = eval_pattern[internal_ply][1 - (type - 1)][D_in_row1.openended][D_in_row1.points] + 1;
     D_in_row1 = pointsInDir(x, y, -1, -1, 3 - type);
-    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row1.openended + 1][D_in_row1.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row1.openended + 1][D_in_row1.points] - 1;
-    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row1.openended][D_in_row1.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row1.openended][D_in_row1.points] + 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][D_in_row1.openended + 1][D_in_row1.points] = eval_pattern[internal_ply][1 - (type - 1)][D_in_row1.openended + 1][D_in_row1.points] - 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][D_in_row1.openended][D_in_row1.points] = eval_pattern[internal_ply][1 - (type - 1)][D_in_row1.openended][D_in_row1.points] + 1;
     D_in_row2 = pointsInDir(x, y, 1, -1, 3 - type);
-    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row2.openended + 1][D_in_row2.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row2.openended + 1][D_in_row2.points] - 1;
-    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row2.openended][D_in_row2.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row2.openended][D_in_row2.points] + 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][D_in_row2.openended + 1][D_in_row2.points] = eval_pattern[internal_ply][1 - (type - 1)][D_in_row2.openended + 1][D_in_row2.points] - 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][D_in_row2.openended][D_in_row2.points] = eval_pattern[internal_ply][1 - (type - 1)][D_in_row2.openended][D_in_row2.points] + 1;
     D_in_row2 = pointsInDir(x, y, -1, 1, 3 - type);
-    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row2.openended + 1][D_in_row2.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row2.openended + 1][D_in_row2.points] - 1;
-    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row2.openended][D_in_row2.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row2.openended][D_in_row2.points] + 1;
-    ***/
+    eval_pattern[internal_ply + 1][1 - (type - 1)][D_in_row2.openended + 1][D_in_row2.points] = eval_pattern[internal_ply][1 - (type - 1)][D_in_row2.openended + 1][D_in_row2.points] - 1;
+    eval_pattern[internal_ply + 1][1 - (type - 1)][D_in_row2.openended][D_in_row2.points] = eval_pattern[internal_ply][1 - (type - 1)][D_in_row2.openended][D_in_row2.points] + 1;
 }
 
 /***
@@ -228,10 +238,10 @@ void Board::makeMove(int square, int type, TT* tt_pointer) {
     if (W) addMoveGenSquare(square + d_W, internal_ply);
     if (N && W) addMoveGenSquare(square + d_NW, internal_ply);
 
-    active_player = 1 - active_player;
-
     // Update evaluation terms
     evalChange(square, type);
+
+    active_player = 1 - active_player;
 
     internal_ply++;
 };
@@ -358,6 +368,21 @@ int Board::evaluate() {
     
     // Mate detection.
     int eval = 5000 * (eval_pattern[internal_ply][active_player][0][5] + eval_pattern[internal_ply][active_player][1][5] + eval_pattern[internal_ply][active_player][2][5]
-                      -eval_pattern[internal_ply][1 - active_player][0][5] - eval_pattern[internal_ply][1 - active_player][1][5] - eval_pattern[internal_ply][1 - active_player][2][5]);
+                     - eval_pattern[internal_ply][1 - active_player][0][5] - eval_pattern[internal_ply][1 - active_player][1][5] - eval_pattern[internal_ply][1 - active_player][2][5]);
+
+    if (eval)
+        return eval;
+
+    // Give openended 4s very high score
+    eval += 25 * (10 * eval_pattern[internal_ply][active_player][1][4] +  10 * eval_pattern[internal_ply][active_player][2][4]
+                 - 1 * eval_pattern[internal_ply][1 - active_player][1][4] - 6 * eval_pattern[internal_ply][1 - active_player][2][4]);
+
+    // Give openended 3s bonus score
+    eval += 5 * (2 * eval_pattern[internal_ply][active_player][1][3] +  10 * eval_pattern[internal_ply][active_player][2][3]
+               - 1 * eval_pattern[internal_ply][1 - active_player][1][3] - 6 * eval_pattern[internal_ply][1 - active_player][2][3]);
+        
+    // Give openended 2s bonus score
+    eval += 1 * (1 * eval_pattern[internal_ply][active_player][2][2] - 1 * eval_pattern[internal_ply][1 - active_player][2][2]);
+
     return eval;
 };
