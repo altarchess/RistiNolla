@@ -32,8 +32,10 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
     if (b->evaluate() > MIN_MATE_SCORE || b->evaluate() < -MIN_MATE_SCORE)
         return b->evaluate();
 
+    int16_t hash_move = -1;
     Entry en = sd->tt.get(b->hash);
     if (en.key == b->hash) {
+        hash_move = en.move;
         if (en.depth >= depth) {
             if (en.score >= beta ? en.type != ALL_NODE 
               : en.type != CUT_NODE && en.score <= alpha)
@@ -44,7 +46,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
     int16_t best_score   = -MAX_MATE_SCORE;
     bool raise_alpha     = false;
 
-    b->generate();
+    b->generate(hash_move);
     int16_t m = b->next();
 
     while (m != -1 && !sd->force_quit) {
@@ -69,7 +71,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, bo
     }
     // If alpha was raised, store as PV_NODE, otherwise as ALL_NODE
     if (!sd->force_quit)
-        sd->tt.put(b->hash, 1 - raise_alpha, depth, best_score, 0);
+        sd->tt.put(b->hash, 1 - raise_alpha, depth, best_score, -1);
     return best_score;
 }
 

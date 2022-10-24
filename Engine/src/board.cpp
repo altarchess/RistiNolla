@@ -69,17 +69,20 @@ void Board::removeMoveGenSquare(int square, int ply) {
  *  Generate all the moves for movelist at current ply
  ***/
 
-void Board::generate() {
+void Board::generate(int16_t hash_move) {
     MoveList* mv = &search_move_lists[internal_ply];
     mv->size     = 0;
     for (int i = 0; i <= max_active_slots; i++) {
-        if (move_gen_list[i] != -1) {
+        if (move_gen_list[i] != -1 && move_gen_list[i] != hash_move) {
             if (move_gen_squares[move_gen_list[i]] >= internal_ply) {
                 move_gen_list[i] = -1;
             } else if (move_gen_squares[move_gen_list[i]] != 0) {
                 mv->moves[mv->size++] = move_gen_list[i];
             }
         }
+    }
+    if (hash_move != -1 && squares[hash_move] == 0) {
+        mv->moves[mv->size++] = hash_move;
     }
 }
 
@@ -375,14 +378,14 @@ int Board::evaluate() {
 
     // Give openended 4s very high score
     eval += 25 * (10 * eval_pattern[internal_ply][active_player][1][4] +  10 * eval_pattern[internal_ply][active_player][2][4]
-                 - 1 * eval_pattern[internal_ply][1 - active_player][1][4] - 6 * eval_pattern[internal_ply][1 - active_player][2][4]);
+                 - 1 * eval_pattern[internal_ply][1 - active_player][2][4]);
 
     // Give openended 3s bonus score
-    eval += 5 * (2 * eval_pattern[internal_ply][active_player][1][3] +  10 * eval_pattern[internal_ply][active_player][2][3]
-               - 1 * eval_pattern[internal_ply][1 - active_player][1][3] - 6 * eval_pattern[internal_ply][1 - active_player][2][3]);
-        
+    eval += 5 * (4 * eval_pattern[internal_ply][active_player][2][3]
+               - eval_pattern[internal_ply][1 - active_player][2][3]);
+
     // Give openended 2s bonus score
-    eval += 1 * (1 * eval_pattern[internal_ply][active_player][2][2] - 1 * eval_pattern[internal_ply][1 - active_player][2][2]);
+    eval += 1 * (eval_pattern[internal_ply][active_player][2][2] - eval_pattern[internal_ply][1 - active_player][2][2]);
 
     return eval;
 };
