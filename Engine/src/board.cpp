@@ -114,47 +114,85 @@ void Board::makeMove(int square, char c) {
 };
 
 /***
- *  Calculates how many in a row we have in specific dir
+ *  Calculates how many in a row we have in specific dir & check for open endedness of row.
  ***/
 
-int Board::pointsInDir(int x, int y, int xd, int yd, int type) {
-    int points = 0;
-
+inARowData Board::pointsInDir(int x, int y, int xd, int yd, int type) {
     x += xd;
     y += yd;
-    while (y >= 0 && y <= y_size - 1 && x >= 0 && x <= x_size) { 
+    inARowData ret;
+    while (y >= 0 && y <= y_size - 1 && x >= 0 && x <= x_size - 1) { 
         if (squares[y * x_size + x] == type)
-            points++;
-        else return points;
+            ret.points++;
+        else if (squares[y * x_size + x] == 0) {
+            ret.openended = 1;
+            return ret;
+        } else {
+            return ret;
+        }
 
         x += xd;
         y += yd;
     }
-    return points;
+    return ret;
 }
 
 /***
  *  Calcualtes evaluation change from previous ply
+ *  Unfortunately this function needs to be complex.
  ***/
 
-int Board::evalChange(int square, int type) {
+void Board::evalChange(int square, int type) {
     int y = square / x_size;
     int x = square - (y * x_size);
 
-    int H_in_row;
-    int V_in_row;
-    int D_in_row1;
-    int D_in_row2;
+    //Used to incremet the in a row count for the placed piece (previously existing in a row + newly placed)
+    inARowData bonus_point;
+    bonus_point.points++;
 
-    H_in_row  = pointsInDir(x, y, 1, 0, type) + 1 + pointsInDir(x, y, -1, 0, type);
-    V_in_row  = pointsInDir(x, y, 0, 1, type) + 1 + pointsInDir(x, y, 0, -1, type);
-    D_in_row1 = pointsInDir(x, y, 1, 1, type) + 1 + pointsInDir(x, y, -1, -1, type);
-    D_in_row2 = pointsInDir(x, y, 1, -1, type) + 1 + pointsInDir(x, y, -1, 1, type);
+    inARowData H_in_row;
+    inARowData V_in_row;
+    inARowData D_in_row1;
+    inARowData D_in_row2;
 
-    if (std::max(H_in_row, V_in_row) > 4 || std::max(D_in_row1, D_in_row2) > 4)
-        return MAX_MATE_SCORE;
-    else 
-        return 0;
+    // Update eval patterns of side who made move
+    H_in_row  = pointsInDir(x, y, 1, 0, type)  + pointsInDir(x, y, -1, 0, type)  + bonus_point;
+    V_in_row  = pointsInDir(x, y, 0, 1, type)  + pointsInDir(x, y, 0, -1, type)  + bonus_point;
+    D_in_row1 = pointsInDir(x, y, 1, 1, type)  + pointsInDir(x, y, -1, -1, type) + bonus_point;
+    D_in_row2 = pointsInDir(x, y, 1, -1, type) + pointsInDir(x, y, -1, 1, type)  + bonus_point;
+
+    eval_pattern[internal_ply + 1][type - 1][H_in_row.openended][H_in_row.points]   = eval_pattern[internal_ply][type - 1][H_in_row.openended][H_in_row.points]   + 1;
+    eval_pattern[internal_ply + 1][type - 1][V_in_row.openended][V_in_row.points]   = eval_pattern[internal_ply][type - 1][V_in_row.openended][V_in_row.points]   + 1;
+    eval_pattern[internal_ply + 1][type - 1][D_in_row1.openended][D_in_row1.points] = eval_pattern[internal_ply][type - 1][D_in_row1.openended][D_in_row1.points] + 1;
+    eval_pattern[internal_ply + 1][type - 1][D_in_row2.openended][D_in_row2.points] = eval_pattern[internal_ply][type - 1][D_in_row2.openended][D_in_row2.points] + 1;
+    
+    /***
+    // Reduce openendedness of not side to move eval patterns
+    H_in_row  = pointsInDir(x, y, 1, 0, 3 - type);
+    eval_pattern[internal_ply + 1][(3 - type) - 1][H_in_row.openended + 1][H_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][H_in_row.openended + 1][H_in_row.points] - 1;
+    eval_pattern[internal_ply + 1][(3 - type) - 1][H_in_row.openended][H_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][H_in_row.openended][H_in_row.points] + 1;
+    H_in_row  = pointsInDir(x, y, -1, 0, 3 - type);
+    eval_pattern[internal_ply + 1][(3 - type) - 1][H_in_row.openended + 1][H_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][H_in_row.openended + 1][H_in_row.points] - 1;
+    eval_pattern[internal_ply + 1][(3 - type) - 1][H_in_row.openended][H_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][H_in_row.openended][H_in_row.points] + 1;
+    V_in_row  = pointsInDir(x, y, 0, 1, 3 - type); 
+    eval_pattern[internal_ply + 1][(3 - type) - 1][V_in_row.openended + 1][V_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][V_in_row.openended + 1][V_in_row.points] - 1;
+    eval_pattern[internal_ply + 1][(3 - type) - 1][V_in_row.openended][V_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][V_in_row.openended][V_in_row.points] + 1;
+    V_in_row  = pointsInDir(x, y, 0, -1, 3 - type);
+    eval_pattern[internal_ply + 1][(3 - type) - 1][V_in_row.openended + 1][V_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][V_in_row.openended + 1][V_in_row.points] - 1;
+    eval_pattern[internal_ply + 1][(3 - type) - 1][V_in_row.openended][V_in_row.points] = eval_pattern[internal_ply][(3 - type) - 1][V_in_row.openended][V_in_row.points] + 1;
+    D_in_row1 = pointsInDir(x, y, 1, 1, 3 - type);  
+    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row1.openended + 1][D_in_row1.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row1.openended + 1][D_in_row1.points] - 1;
+    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row1.openended][D_in_row1.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row1.openended][D_in_row1.points] + 1;
+    D_in_row1 = pointsInDir(x, y, -1, -1, 3 - type);
+    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row1.openended + 1][D_in_row1.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row1.openended + 1][D_in_row1.points] - 1;
+    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row1.openended][D_in_row1.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row1.openended][D_in_row1.points] + 1;
+    D_in_row2 = pointsInDir(x, y, 1, -1, 3 - type);
+    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row2.openended + 1][D_in_row2.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row2.openended + 1][D_in_row2.points] - 1;
+    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row2.openended][D_in_row2.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row2.openended][D_in_row2.points] + 1;
+    D_in_row2 = pointsInDir(x, y, -1, 1, 3 - type);
+    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row2.openended + 1][D_in_row2.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row2.openended + 1][D_in_row2.points] - 1;
+    eval_pattern[internal_ply + 1][(3 - type) - 1][D_in_row2.openended][D_in_row2.points] = eval_pattern[internal_ply][(3 - type) - 1][D_in_row2.openended][D_in_row2.points] + 1;
+    ***/
 }
 
 /***
@@ -192,8 +230,8 @@ void Board::makeMove(int square, int type, TT* tt_pointer) {
 
     active_player = 1 - active_player;
 
-    // update evaluation - Note: currently only spots mate
-    eval_pattern[internal_ply + 1] = -eval_pattern[internal_ply] - evalChange(square, type);
+    // Update evaluation terms
+    evalChange(square, type);
 
     internal_ply++;
 };
@@ -316,5 +354,10 @@ void Board::printt() {
     }
 }
 int Board::evaluate() {
-    return eval_pattern[internal_ply];
+    // Eval always from pov of side to move player. active_player automatically makes sure eval is from correct pov
+    
+    // Mate detection.
+    int eval = 5000 * (eval_pattern[internal_ply][active_player][0][5] + eval_pattern[internal_ply][active_player][1][5] + eval_pattern[internal_ply][active_player][2][5]
+                      -eval_pattern[internal_ply][1 - active_player][0][5] - eval_pattern[internal_ply][1 - active_player][1][5] - eval_pattern[internal_ply][1 - active_player][2][5]);
+    return eval;
 };
