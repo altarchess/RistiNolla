@@ -15,9 +15,34 @@ pygame.init()
 pygame.display.set_caption('')
 scr = pygame.display.set_mode((settings.grid_size * settings.size_x, settings.grid_size * settings.size_y))
 
+# Keep track of wins for each side when multiple rounds
+wins = [0, 0]
+roundid = 0
+
 # Main game loop
 done = False  
 while not done:  
+
+    game_state = main_board.game_state()
+    if game_state == board.GameState.DRAW:
+        wins[0] += 0.5
+        wins[1] += 0.5
+        print(settings.player_x + " " + str(wins[0]) + " - " + str(wins[1]) + " " + settings.player_0)
+        if roundid < settings.rounds:
+            main_board.new_game()
+            roundid += 1
+    if game_state == board.GameState.WIN_X:
+        wins[0] += 1
+        print(settings.player_x + " " + str(wins[0]) + " - " + str(wins[1]) + " " + settings.player_0)
+        if roundid < settings.rounds:
+            main_board.new_game()
+            roundid += 1
+    if game_state == board.GameState.WIN_0:
+        wins[1] += 1
+        print(settings.player_x + " " + str(wins[0]) + " - " + str(wins[1]) + " " + settings.player_0)
+        if roundid < settings.rounds:
+            main_board.new_game()
+            roundid += 1
 
     # Get HUMAN/Engine setting for side to move
     opponent_setting = settings.player_x
@@ -27,10 +52,12 @@ while not done:
     # Unless side to move is HUMAN, we need to get the move from the engine specified in config.
     if opponent_setting != "HUMAN":
         sp = subprocess.Popen(opponent_setting, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-        print("position " + str(settings.size_x) + " " + str(settings.size_y) + " " + str(main_board.turn) + " " + main_board.pos_string() + "\n")
+        if (settings.rounds < 2):
+            print("position " + str(settings.size_x) + " " + str(settings.size_y) + " " + str(main_board.turn) + " " + main_board.pos_string() + "\n")
         sp.stdin.write(("position " + str(settings.size_x) + " " + str(settings.size_y) + " " + str(main_board.turn) + " " + main_board.pos_string() + "\n").encode())
         sp.stdin.flush()
-        print("gotime " + str(settings.engine_time) + "\n")
+        if (settings.rounds < 2):
+            print("gotime " + str(settings.engine_time) + "\n")
         sp.stdin.write(("gotime " + str(settings.engine_time) + "\n").encode())
         sp.stdin.flush()
                     
@@ -40,7 +67,8 @@ while not done:
                 print("Failure to print bestmove!")
                 break
             line = sp.stdout.readline().decode()
-            print(line)
+            if (settings.rounds < 2):
+                print(line)
             cmd = line.split(" ")
             if cmd[0] == "bestmove":
                 main_board.make_move(int(cmd[1]), board.PieceType(main_board.turn + 1))
@@ -59,3 +87,4 @@ while not done:
     # Render board state
     main_board.render(scr)
     pygame.display.flip()
+    scr.fill((0,0,0))

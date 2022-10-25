@@ -10,6 +10,8 @@ class Config:
         self.size_x = int(config.get('Board', 'size_x'))
         self.size_y = int(config.get('Board', 'size_y'))
         self.grid_size = int(config.get('Board', 'grid_size'))
+        self.startpos = config.get('Board', 'startpos')
+        self.rounds = int(config.get('Board', 'rounds'))
 
         self.engine_time = int(config.get('AISettings', 'max_time'))
 
