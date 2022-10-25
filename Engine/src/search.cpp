@@ -46,6 +46,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
     }
 
     int16_t best_score   = -MAX_MATE_SCORE;
+    int16_t best_move    = -1;
     bool raise_alpha     = false;
 
     b->generate(hash_move, sd->killer_moves[ply]);
@@ -57,6 +58,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
         b->undoMove();
         if (score > best_score) {
             best_score = score;
+            best_move = m;
             if (root && !sd->force_quit)
                 sd->best_move = m;
             if (score > alpha) {
@@ -74,7 +76,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
     }
     // If alpha was raised, store as PV_NODE, otherwise as ALL_NODE
     if (!sd->force_quit)
-        sd->tt.put(b->hash, 1 - raise_alpha, depth, best_score, -1);
+        sd->tt.put(b->hash, 1 - raise_alpha, depth, best_score, best_move);
     return best_score;
 }
 

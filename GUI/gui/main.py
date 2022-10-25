@@ -31,18 +31,24 @@ while not done:
         if roundid < settings.rounds:
             main_board.new_game()
             roundid += 1
+        else:
+            exit()
     if game_state == board.GameState.WIN_X:
         wins[0] += 1
         print(settings.player_x + " " + str(wins[0]) + " - " + str(wins[1]) + " " + settings.player_0)
         if roundid < settings.rounds:
             main_board.new_game()
             roundid += 1
+        else:
+            exit()
     if game_state == board.GameState.WIN_0:
         wins[1] += 1
         print(settings.player_x + " " + str(wins[0]) + " - " + str(wins[1]) + " " + settings.player_0)
         if roundid < settings.rounds:
             main_board.new_game()
             roundid += 1
+        else:
+            exit()
 
     # Get HUMAN/Engine setting for side to move
     opponent_setting = settings.player_x
