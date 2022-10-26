@@ -9,12 +9,20 @@
 #define MIN_MATE_SCORE 4900
 #define MAX_INTERNAL_PLY MAX_BOARD_SIZE
 
+#define BONUS_CAP 10
+#define MAX_HISTORY_SCORE BONUS_CAP*BONUS_CAP
+
 #ifndef TICTACTOE_BOARD_H
 #define TICTACTOE_BOARD_H
 
 struct MoveList {
-    int moves[MAX_BOARD_SIZE] = {};
+    int moves[MAX_BOARD_SIZE]          = {};
+    int scores[MAX_BOARD_SIZE]         = {};
+    int searched_moves[MAX_BOARD_SIZE] = {};
     int size;
+    int searched;
+
+    void swap(int i_1, int i_2);
 };
 
 struct inARowData {
@@ -56,7 +64,8 @@ class Board {
     MoveList search_move_lists[MAX_INTERNAL_PLY]            = {};
     MoveData moves[MAX_BOARD_SIZE];
     int eval_pattern[MAX_INTERNAL_PLY][2][3][MAX_AXIS_SIZE] = {}; // ply, side to move, openendedness, in a row count. Using MAX_AXIS_SIZE just to be ultra safe, technicly 5 should be fine.
-    
+    int history[MAX_BOARD_SIZE][2]                          = {};
+
     int d_N, d_NE, d_E, d_SE, d_S, d_SW, d_W, d_NW;
 
     void addMoveGenMove(int square);
@@ -70,7 +79,7 @@ class Board {
 
     Board() {};
     
-    void generate(int16_t hash_move = -1, int16_t killer = -1);
+    void generate(int16_t hash_move, int16_t killer);
     int  next();
     void makeMove(int square, int type, TT* tt_pointer = nullptr);
     void makeMove(int square, char c);
@@ -83,6 +92,10 @@ class Board {
 
     int evaluate();
 
+    void addHistory(int16_t move, int16_t depth);
+    void decHistory(int16_t move, int16_t depth);
+    void decHistories(int16_t depth);
+    
     void print();
     void printt();
 };

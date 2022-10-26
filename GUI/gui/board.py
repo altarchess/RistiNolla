@@ -109,7 +109,7 @@ class Board:
     def new_game(self):
         if (self.config.startpos == "random"):
             self.pieces = [PieceType.square_empty] * (self.config.size_x * self.config.size_y)
-            for i in range(self.config.size_x):
+            for i in range(self.config.size_x + (self.config.size_x % 2)):
                 self.pieces[randint(0, self.config.size_x * self.config.size_y - 1)] = PieceType(1 + (i % 2))
             self.turn = randint(0,1);
         else:

@@ -30,6 +30,15 @@ void initKeys() {
     }
 }
 
+void MoveList::swap(int i_1, int i_2) {
+    int move    = moves[i_1];
+    int score   = scores[i_1];
+    moves[i_1]  = moves[i_2];
+    moves[i_2]  = move;
+    scores[i_1] = scores[i_2];
+    scores[i_2] = score;
+}
+
 /***
  *  Add move to movegen active square list
  ***/
@@ -72,19 +81,23 @@ void Board::removeMoveGenSquare(int square, int ply) {
 void Board::generate(int16_t hash_move, int16_t killer_move) {
     MoveList* mv = &search_move_lists[internal_ply];
     mv->size     = 0;
+    mv->searched = 0;
     for (int i = 0; i <= max_active_slots; i++) {
         if (move_gen_list[i] != -1 && move_gen_list[i] != hash_move && move_gen_list[i] != killer_move) {
             if (move_gen_squares[move_gen_list[i]] >= internal_ply) {
                 move_gen_list[i] = -1;
             } else if (move_gen_squares[move_gen_list[i]] != 0) {
+                mv->scores[mv->size] = history[move_gen_list[i]][active_player];
                 mv->moves[mv->size++] = move_gen_list[i];
             }
         }
     }
     if (killer_move != -1 && squares[killer_move] == 0) {
+        mv->scores[mv->size] = 1000;
         mv->moves[mv->size++] = killer_move;
     }
     if (hash_move != -1 && hash_move != killer_move && squares[hash_move] == 0) {
+        mv->scores[mv->size] = 1001;
         mv->moves[mv->size++] = hash_move;
     }
 }
@@ -96,10 +109,17 @@ void Board::generate(int16_t hash_move, int16_t killer_move) {
 
 int Board::next() {
     MoveList* mv = &search_move_lists[internal_ply];
-    if (mv->size) {
-        return mv->moves[--mv->size];
+    if (!mv->size)
+        return -1;
+    int best_index = 0;
+    for (int i = 1; i < mv->size; i++) {
+        if (mv->scores[i] > mv->scores[best_index]) {
+            best_index = i;
+        }
     }
-    return -1;
+    mv->swap(mv->size - 1, best_index);
+    mv->searched_moves[mv->searched++] =  mv->moves[mv->size - 1];
+    return mv->moves[--mv->size];
 }
 
 /***
@@ -392,3 +412,20 @@ int Board::evaluate() {
 
     return eval;
 };
+
+void Board::addHistory(int16_t move, int16_t depth) {
+    int16_t bonus = std::min(depth, (int16_t)BONUS_CAP);
+    history[move][active_player] += bonus * bonus - history[move][active_player] * (bonus * bonus) / MAX_HISTORY_SCORE;
+};
+
+void Board::decHistory(int16_t move, int16_t depth) {
+    int16_t bonus = std::min(depth, (int16_t)BONUS_CAP);
+    history[move][active_player] += -bonus * bonus - history[move][active_player] * (bonus * bonus) / MAX_HISTORY_SCORE;
+};
+
+void Board::decHistories(int16_t depth) {
+    MoveList* mv = &search_move_lists[internal_ply];
+    for (int i = 0; i < mv->searched - 1; i++) {
+        decHistory(mv->searched_moves[i], depth);
+    }
+}

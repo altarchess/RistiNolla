@@ -69,6 +69,8 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
             if (score >= beta && !sd->force_quit) {
                 sd->killer_moves[ply] = m;
                 sd->tt.put(b->hash, CUT_NODE, depth, score, m);
+                b->decHistories(depth);
+                b->addHistory(m, depth);
                 return score;
             }
         }
