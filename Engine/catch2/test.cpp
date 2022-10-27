@@ -1,4 +1,4 @@
-#define CONFIG_CATCH_MAIN
+#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include <iostream>
 #include "../src/board.h"
@@ -7,7 +7,7 @@ TEST_CASE("simple test case","[simple]"){
 	REQUIRE(1 == 1);
 };
 
-/*TEST_CASE("makemove", "[makemove]") {
+TEST_CASE("makemove", "[makemove]") {
     std::cout << "WAFASFASF"<<  std::endl;
     Board b;
     initKeys();
@@ -17,4 +17,4 @@ TEST_CASE("simple test case","[simple]"){
     int count = 0;
     while (b.next() != -1)count++; 
     REQUIRE(count == 8);
-}*/
+};
