@@ -38,6 +38,8 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
     Entry en = sd->tt.get(b->hash);
     if (en.key == b->hash) {
         hash_move = en.move;
+        if (abs(en.score) == 5000)
+            return en.score;
         if (en.depth >= depth) {
             if (en.score >= beta ? en.type != ALL_NODE 
               : en.type != CUT_NODE && en.score <= alpha)

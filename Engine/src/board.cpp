@@ -389,6 +389,12 @@ void Board::printt() {
         std::cout << std::endl;
     }
 }
+
+bool Board::mateThreat(bool side) {
+    return eval_pattern[internal_ply][side][1][4] + 
+           eval_pattern[internal_ply][side][2][4] > 0;
+}
+
 int Board::evaluate() {
     // Eval always from pov of side to move player. active_player automatically makes sure eval is from correct pov
     

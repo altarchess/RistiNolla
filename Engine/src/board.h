@@ -90,6 +90,7 @@ class Board {
 
     void resize(int x, int y);
 
+    bool mateThreat(bool side);
     int evaluate();
 
     void addHistory(int16_t move, int16_t depth);
