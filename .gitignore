@@ -4,3 +4,5 @@
 .vscode/
 
 GUI/gui/__pycache__/
+
+*.gcno

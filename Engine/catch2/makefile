@@ -2,8 +2,8 @@ CC      = g++
 SRC     = *.cpp ../src/board.h ../src/board.cpp
 EXE     = test-runner
 
-WFLAGS   = -std=c++17 -Wall -Wextra -Wshadow
-CFLAGS   = -O3 $(WFLAGS) -DNDEBUG -flto -march=native
+WFLAGS   = -std=c++17 -Wall
+CFLAGS   = -O3 $(WFLAGS) -flto
 COVERAGE = --coverage
 
 release:
