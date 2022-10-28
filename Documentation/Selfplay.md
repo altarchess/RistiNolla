@@ -2,7 +2,23 @@
 Self play is used to test potential playing strength improvements in the engine.
 
 ## Conditions
-Testing conditions for self play games are 15x15 board, 100ms per move, "random" startpos option in GUI.
+GUI config used in self play testing
+```bash
+[Board]
+size_x = 15
+size_y = 15
+grid_size = 40
+startpos = RANDOM
+rounds = 1000
+
+[AISettings]
+max_time = 100
+
+[Players]  
+player_x = command1
+player_0 = command2
+```
+
 
 ## Tests
 Note: Only the tests of comitted improvements since proper randomized testing was implemented in the GUI.
