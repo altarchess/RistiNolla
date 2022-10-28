@@ -6,6 +6,11 @@ Testing conditions for self play games are 15x15 board, 100ms per move, "random"
 
 ## Tests
 Note: Only the tests of comitted improvements since proper randomized testing was implemented in the GUI.
+
+### RistiNolla 0.6 matefromtt - RistiNolla 0.5 history2
+`481.5 - 320.5`
+patch #6 use mate information from tt regardless of depth
+
 ### RistiNolla 0.5 history2 - RistiNolla 0.4 history
 `759 - 595`
 patch #5 fix history bug
