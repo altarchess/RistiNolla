@@ -107,7 +107,7 @@ class Board:
         return GameState.DRAW
 
     def new_game(self):
-        if (self.config.startpos == "random"):
+        if (self.config.startpos == "RANDOM"):
             self.pieces = [PieceType.square_empty] * (self.config.size_x * self.config.size_y)
             for i in range(self.config.size_x + (self.config.size_x % 2)):
                 self.pieces[randint(0, self.config.size_x * self.config.size_y - 1)] = PieceType(1 + (i % 2))

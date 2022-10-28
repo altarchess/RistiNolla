@@ -374,7 +374,7 @@ void Board::print() {
 }
 
 /***
- *  print current movegen active squares.
+ *  print current movegen active squares. Used for debugging purposes
  ***/
 
 void Board::printt() {
