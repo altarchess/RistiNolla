@@ -114,3 +114,8 @@ player_0 = ../../Engine/RistiNolla.exe
 ```
 player_x refers to the player playing with the X's, player_0 to the player playing with the 0's. HUMAN just means the human player should input the moves (left click with mouse on the square). If you want the AI to play either colour instead, you should specify the starting command of the AI program. When using startpos = RANDOM, the player who gets to make the first move will alternate starting from round 1 onwards.
 
+### Playing
+![kuva](https://user-images.githubusercontent.com/57199282/198719139-857aa67b-bd8f-4dc3-aa10-9f0575154356.png)
+
+When playing in HUMAN vs engine or HUMAN vs HUMAN mode, simply left click the square you want to move on when its your turn to make a move. Moves can not be taken back, so be careful!
+
