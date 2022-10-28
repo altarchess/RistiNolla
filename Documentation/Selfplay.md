@@ -2,7 +2,7 @@
 Self play is used to test potential playing strength improvements in the engine.
 
 ## Conditions
-GUI config used in self play testing
+GUI config used in self play testing (For further instructions on how to do self play testing, see [User guide](https://github.com/altarchess/RistiNolla/blob/main/Documentation/User_guide.md)).
 ```bash
 [Board]
 size_x = 15
