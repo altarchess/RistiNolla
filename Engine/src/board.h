@@ -47,6 +47,11 @@ struct MoveData {
 };
 
 class Board {
+
+    #ifdef CATCH_CONFIG_MAIN
+    public:
+    #endif
+
     // Size of the tic tac toe grid;
     int x_size = 0;
     int y_size = 0;
