@@ -6,3 +6,7 @@
 GUI/gui/__pycache__/
 
 *.gcno
+
+*.gcov
+
+*.gcda
