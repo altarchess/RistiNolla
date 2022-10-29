@@ -3,6 +3,9 @@
 ## Project structure
 The project contains 2 completely separate programs, the engine and the gui. The engine and the gui commincate via standard input & output. 
 
+![Class diagram](https://user-images.githubusercontent.com/57199282/198801451-b54b03c1-6e2d-4622-ba0e-188da1f86ba0.png)
+
+
 ## Complexity
 Using, d = depth, b = branching factor
 
