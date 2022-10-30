@@ -30,6 +30,9 @@ void initKeys() {
     }
 }
 
+/***
+ * Swap index of 2 moves in the MoveList struct.
+ ***/
 void MoveList::swap(int i_1, int i_2) {
     int move    = moves[i_1];
     int score   = scores[i_1];
@@ -84,6 +87,7 @@ void Board::generate(int16_t hash_move, int16_t killer_move) {
     mv->searched = 0;
     for (int i = 0; i <= max_active_slots; i++) {
         if (move_gen_list[i] != -1 && move_gen_list[i] != hash_move && move_gen_list[i] != killer_move) {
+            // If the square was activated by a child node of sibling or by a sibling, disregard it in move generation.
             if (move_gen_squares[move_gen_list[i]] >= internal_ply) {
                 move_gen_list[i] = -1;
             } else if (move_gen_squares[move_gen_list[i]] != 0) {
@@ -92,10 +96,12 @@ void Board::generate(int16_t hash_move, int16_t killer_move) {
             }
         }
     }
+    // Give the killer move a score above all history scores but below hash move.
     if (killer_move != -1 && squares[killer_move] == 0) {
         mv->scores[mv->size] = 1000;
         mv->moves[mv->size++] = killer_move;
     }
+    // Give the hash move a score above killer move and all history scores.
     if (hash_move != -1 && hash_move != killer_move && squares[hash_move] == 0) {
         mv->scores[mv->size] = 1001;
         mv->moves[mv->size++] = hash_move;
@@ -204,7 +210,7 @@ void Board::evalChange(int square, int type) {
     eval_pattern[internal_ply + 1][type - 1][D_in_row1.openended][D_in_row1.points - 1] = eval_pattern[internal_ply][type - 1][D_in_row1.openended][D_in_row1.points - 1] - 1;
     eval_pattern[internal_ply + 1][type - 1][D_in_row2.openended][D_in_row2.points - 1] = eval_pattern[internal_ply][type - 1][D_in_row2.openended][D_in_row2.points - 1] - 1;
 
-    // Reduce openendedness of not side to move eval patterns
+    // Reduce openendedness of potential not side to move eval patterns
     H_in_row  = pointsInDir(x, y, 1, 0, 3 - type);
     eval_pattern[internal_ply + 1][1 - (type - 1)][H_in_row.openended + 1][H_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][H_in_row.openended + 1][H_in_row.points] - 1;
     eval_pattern[internal_ply + 1][1 - (type - 1)][H_in_row.openended][H_in_row.points] = eval_pattern[internal_ply][1 - (type - 1)][H_in_row.openended][H_in_row.points] + 1;
@@ -390,10 +396,18 @@ void Board::printt() {
     }
 }
 
+/***
+ * Detects mate threats by checking if there are openended straights of 4s.
+ ***/
+
 bool Board::mateThreat(bool side) {
     return eval_pattern[internal_ply][side][1][4] + 
            eval_pattern[internal_ply][side][2][4] > 0;
 }
+
+/***
+ * Position evaluation and mate detection.
+ ***/
 
 int Board::evaluate() {
     // Eval always from pov of side to move player. active_player automatically makes sure eval is from correct pov
@@ -419,15 +433,27 @@ int Board::evaluate() {
     return eval;
 };
 
+/***
+ * Increase history score of a given move depending on search depth.
+ ***/
+
 void Board::addHistory(int16_t move, int16_t depth) {
     int16_t bonus = std::min(depth, (int16_t)BONUS_CAP);
     history[move][active_player] += bonus * bonus - history[move][active_player] * (bonus * bonus) / MAX_HISTORY_SCORE;
 };
 
+/***
+ * Decrease history score of a given move depending on search depth.
+ ***/
+
 void Board::decHistory(int16_t move, int16_t depth) {
     int16_t bonus = std::min(depth, (int16_t)BONUS_CAP);
     history[move][active_player] += -bonus * bonus - history[move][active_player] * (bonus * bonus) / MAX_HISTORY_SCORE;
 };
+
+/***
+ * Decrease histories of all but last searched move depending on search depth.
+ ***/
 
 void Board::decHistories(int16_t depth) {
     MoveList* mv = &search_move_lists[internal_ply];

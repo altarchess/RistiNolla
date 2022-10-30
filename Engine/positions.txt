@@ -1,4 +1,4 @@
-A collection of random positions.
+A collection of random positions used for testing the program.
 
 position 5 5 1 Xeeeeeeeeeeeeeeeeeeeeeee0 board used in User_guide.md
 

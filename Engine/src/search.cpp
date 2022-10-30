@@ -34,6 +34,9 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
 
     bool root = ply == 0;
 
+    /***
+     * Transposition table probing, see https://www.chessprogramming.org/Transposition_Table
+     ***/
     int16_t hash_move = -1;
     Entry en = sd->tt.get(b->hash);
     if (en.key == b->hash) {
@@ -51,9 +54,11 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
     int16_t best_move    = -1;
     bool raise_alpha     = false;
 
+    // Generate and score all the moves for the current ply and get the highest scoring move.
     b->generate(hash_move, sd->killer_moves[ply]);
     int16_t m = b->next();
 
+    // Loop over the moves till the end of the move list/till we run out of time.
     while (m != -1 && !sd->force_quit) {
         b->makeMove(m, 1 + b->getActivePlayer(), &sd->tt);
         int score = -negaMax(b, sd, -beta, -alpha, depth - 1, ply + 1);
@@ -61,13 +66,15 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
         if (score > best_score) {
             best_score = score;
             best_move = m;
+            // In root nodes, set best move. Avoid doing it if search is terminating, as search scores wouldnt be reliable.
             if (root && !sd->force_quit)
                 sd->best_move = m;
             if (score > alpha) {
                 alpha = score;
+                // set raise_alpha flag so we know we should store to tt as a PV_NODE unless we manage to beat beta.
                 raise_alpha = true;
             }
-            // Alpha-Beta cutoff.
+            // Alpha-Beta cutoff. Update move ordering data, save to tt, and finally, return score.
             if (score >= beta && !sd->force_quit) {
                 sd->killer_moves[ply] = m;
                 sd->tt.put(b->hash, CUT_NODE, depth, score, m);
@@ -76,6 +83,7 @@ int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, in
                 return score;
             }
         }
+        // Get the next best move
         m = b->next();
     }
     // If alpha was raised, store as PV_NODE, otherwise as ALL_NODE

@@ -18,4 +18,5 @@ struct SearchData {
     int16_t killer_moves[MAX_INTERNAL_PLY] = {};
 };
 
+int16_t negaMax(Board* b, SearchData* sd, int alpha, int beta, int16_t depth, int ply);
 int16_t searchRoot(Board* board, SearchData* sd);
