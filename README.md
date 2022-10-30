@@ -8,6 +8,7 @@ A tic tac toe engine in C++.
 ### [Testing document](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Testing_document.md)
 ### [Self play testing](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Selfplay.md)
 ### [User guide](https://github.com/altarchess/RistiNolla/blob/main/Documentation/User_guide.md)
+### [Hour reporting](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Hour_reporting.md)
 
 ### Weekly reports
 * [Weekly report #1](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Weekly_report_1.md)
