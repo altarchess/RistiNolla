@@ -103,7 +103,9 @@ int16_t searchRoot(Board* b, SearchData*  sd) {
         int16_t score = negaMax(b, sd, -MAX_MATE_SCORE, MAX_MATE_SCORE, depth, 0);
         if (sd->force_quit)
             break;
+        #ifdef ENGINE_MAIN
         std::cout << "depth " << depth << " score " << score << " nodes " << sd->nodes << std::endl;
+        #endif
     }
     return sd->best_move;
 }

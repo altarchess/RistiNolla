@@ -355,6 +355,7 @@ void Board::resize(int x, int y) {
     d_NW = x_size -1;
 }
 
+#ifdef ENGINE_MAIN
 /***
  *  Print current board state
  ***/
@@ -395,6 +396,7 @@ void Board::printt() {
         std::cout << std::endl;
     }
 }
+#endif
 
 /***
  * Position evaluation and mate detection.
@@ -416,7 +418,7 @@ int Board::evaluate() {
 
     // Give openended 3s bonus score
     eval += 5 * (4 * eval_pattern[internal_ply][active_player][2][3]
-               - eval_pattern[internal_ply][1 - active_player][2][3]);
+                   - eval_pattern[internal_ply][1 - active_player][2][3]);
 
     // Give openended 2s bonus score
     eval += 1 * (eval_pattern[internal_ply][active_player][2][2] - eval_pattern[internal_ply][1 - active_player][2][2]);

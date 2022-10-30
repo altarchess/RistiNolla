@@ -28,6 +28,9 @@ TEST_CASE("test correctness of search scores", "[search]") {
     // Position from /Engine/positions.txt, should not see mate at all
     setPos(&search_board, "position 7 7 1 eeeeeeeeeeeeeeeeeeeeeeeeXeeeeeeeeeeeeeeeeeeeeeeee");
     REQUIRE(abs(negaMax(&search_board, &search_data, -5000, 5000, 5, 0)) < 5000); // No mate in sight
+    // Position from /Engine/positions.txt, should not see mate at all
+    setPos(&search_board, "position 5 5 1 eeeeeeeeeeeeX0X0XX00eeeee");
+    REQUIRE(abs(negaMax(&search_board, &search_data, -5000, 5000, 8, 0)) < 5000); // No mate in sight
 };
 
 /***

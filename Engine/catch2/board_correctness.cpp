@@ -79,4 +79,5 @@ TEST_CASE("makemove and unmakemove updates hash key correctly", "[makemove]") {
     board.makeMove(1, 2);
     board.makeMove(0, 1);
     REQUIRE(depth2_key == board.hash);
+    REQUIRE(initial_key != board.hash);
 };

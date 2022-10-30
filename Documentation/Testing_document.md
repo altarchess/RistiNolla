@@ -12,7 +12,7 @@ Correct updating of evaluation params & active move gen squares on makemove etc.
 
 ```bash
 File '../src/search.cpp'
-Lines executed:91.30% of 46
+Lines executed:93.48% of 46
 
 File '../src/board.cpp'
 Lines executed:86.08% of 237
