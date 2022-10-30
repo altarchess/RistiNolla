@@ -59,3 +59,24 @@ TEST_CASE("makemove updates side to move correctly", "[makemove]") {
     board.makeMove(0, 2);
     REQUIRE(board.getActivePlayer() == 0);
 };
+
+/***
+ * Make sure hash key is the same before and after making and unmaking the same moves.
+ * Also check that we arrive at the same key when getting to the same position from different move orders
+ ***/
+
+TEST_CASE("makemove and unmakemove updates hash key correctly", "[makemove]") {
+    initKeys();
+    board.resize(5,5);
+    board.setActivePlayer(0);
+    uint64_t initial_key = board.hash;
+    board.makeMove(0, 1);
+    board.makeMove(1, 2);
+    uint64_t depth2_key  = board.hash;
+    board.undoMove();
+    board.undoMove();
+    REQUIRE(initial_key == board.hash);
+    board.makeMove(1, 2);
+    board.makeMove(0, 1);
+    REQUIRE(depth2_key == board.hash);
+};

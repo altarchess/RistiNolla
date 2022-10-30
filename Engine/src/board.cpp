@@ -397,15 +397,6 @@ void Board::printt() {
 }
 
 /***
- * Detects mate threats by checking if there are openended straights of 4s.
- ***/
-
-bool Board::mateThreat(bool side) {
-    return eval_pattern[internal_ply][side][1][4] + 
-           eval_pattern[internal_ply][side][2][4] > 0;
-}
-
-/***
  * Position evaluation and mate detection.
  ***/
 

@@ -15,7 +15,10 @@ File '../src/search.cpp'
 Lines executed:91.30% of 46
 
 File '../src/board.cpp'
-Lines executed:85.00% of 240
+Lines executed:86.08% of 237
+
+File '../src/tt.cpp'
+Lines executed:80.00% of 15
 ```
 
 ### Running the tests
