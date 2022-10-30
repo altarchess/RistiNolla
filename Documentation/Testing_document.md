@@ -15,7 +15,7 @@ File '../src/search.cpp'
 Lines executed:93.48% of 46
 
 File '../src/board.cpp'
-Lines executed:94.44% of 216
+Lines executed:95.37% of 216
 
 File '../src/tt.cpp'
 Lines executed:80.00% of 15
@@ -45,6 +45,7 @@ Now you can check code coverage with
 ```bash
 gcov board.cpp
 gcov search.cpp
+gcov tt.cpp
 ```
 
 ## Self play testing

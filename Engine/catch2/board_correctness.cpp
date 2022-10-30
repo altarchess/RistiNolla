@@ -81,3 +81,19 @@ TEST_CASE("makemove and unmakemove updates hash key correctly", "[makemove]") {
     REQUIRE(depth2_key == board.hash);
     REQUIRE(initial_key != board.hash);
 };
+
+/***
+ * Make sure swapping moves in movelists works
+ ***/
+
+TEST_CASE("swapping moves in movelist works", "[movelist]") {
+    MoveList mv;
+    mv.moves[1]  = 1;
+    mv.moves[2]  = 2;
+    mv.swap(0,2);
+    mv.swap(0,1);
+    mv.swap(1,2);
+    REQUIRE(mv.moves[0] == 1);
+    REQUIRE(mv.moves[1] == 0);
+    REQUIRE(mv.moves[2] == 2);
+};
