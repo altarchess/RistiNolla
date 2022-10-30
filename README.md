@@ -5,6 +5,7 @@ A tic tac toe engine in C++.
 ## Links to documentation
 ### [Design document](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Design_document.md)
 ### [Implementation document](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Implementation_document.md)
+### [Testing document](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Testing_document.md)
 ### [Self play testing](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Selfplay.md)
 ### [User guide](https://github.com/altarchess/RistiNolla/blob/main/Documentation/User_guide.md)
 
