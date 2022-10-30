@@ -1,6 +1,9 @@
 # RistiNolla
 
-A tic tac toe engine in C++. 
+A m,n,k engine in C++. 
+
+## Releases
+[RistiNolla 1.0](https://github.com/altarchess/RistiNolla/releases/tag/1.0)
 
 ## Links to documentation
 ### [Design document](https://github.com/altarchess/RistiNolla/blob/main/Documentation/Design_document.md)
