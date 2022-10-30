@@ -1,5 +1,5 @@
 ## Correctness testing
-Unit testing using catch2 is used to test stuff is working as it' suposed to. Only the engine has been tested, testing the GUI seems pointless. 
+Unit testing using catch2 is used to test stuff is working as it' suposed to. Only the engine has been tested, testing the GUI was not required, so I decided not to. If this was a more professional project, testing the GUI would be very important as well, as it is used for performance testing, and glitches in the GUI could severly harm progress in game play strength.
 
 ### Search
 The negaMax function (returns score) is tested by checking if it finds mate in positions that are either mate or not. The searchRoot function (returns best move), is tested by giving it positions where mate can be found within the given depth, and checking if it finds the correct move.
