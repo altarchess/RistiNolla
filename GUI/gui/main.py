@@ -88,6 +88,7 @@ while not done:
             if event.button == 1:
                 grid_x = main_board.get_internal_cord(pygame.mouse.get_pos()[0])
                 grid_y = main_board.get_internal_cord(pygame.mouse.get_pos()[1])
+                main_board.make_move(grid_x + settings.size_x * grid_y, board.PieceType(main_board.turn + 1))
 
     # Render board state
     main_board.render(scr)
