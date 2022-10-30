@@ -5,7 +5,7 @@ Unit testing using catch2 is used to test stuff is working as it' suposed to. On
 The negaMax function (returns score) is tested by checking if it finds mate in positions that are either mate or not. The searchRoot function (returns best move), is tested by giving it positions where mate can be found within the given depth, and checking if it finds the correct move.
 
 ### Board
-Correct updating of evaluation params & active move gen squares on makemove etc. are tested simply by giving it some positions, making moves and checking if evaluation / generated movecount matches. There are also simple tests for some simple things like correct updating of side to move etc.
+Correct updating of evaluation params & active move gen squares on makemove etc. are tested simply by giving it some positions, making moves and checking if evaluation / generated movecount matches. There are also simple tests for some simple things like correct updating of side to move etc. The Board.print() and .printt() functions that are used to print out debugging information are excluded from the coverage code coverage report.
 
 
 ### Test coverage measured with gcov:
@@ -15,7 +15,7 @@ File '../src/search.cpp'
 Lines executed:93.48% of 46
 
 File '../src/board.cpp'
-Lines executed:86.08% of 237
+Lines executed:94.44% of 216
 
 File '../src/tt.cpp'
 Lines executed:80.00% of 15
